@@ -14,7 +14,7 @@ async def enable(services):
     term_api = TermApi(services)
 
     udp_contact = [c for c in services.get('contact_svc').contacts if c.name == 'websocket']
-    udp_contact[0].handler.handles.append(Handle(tag='terminal'))
+    udp_contact[0].handler.handles.append(Handle(tag='manx'))
 
     app.router.add_static('/manx', 'plugins/manx/static/', append_version=True)
     app.router.add_route('GET', '/plugin/manx/gui', term_api.splash)
