@@ -68,7 +68,7 @@ function writeHistory(value) {
 }
 
 function getShellHistory(elem) {
-    restRequest('POST', {'paw':elem.options[elem.selectedIndex].getAttribute('data-paw')}, populateHistory, endpoint='/plugin/terminal/history');
+    restRequest('POST', {'paw':elem.options[elem.selectedIndex].getAttribute('data-paw')}, populateHistory, endpoint='/plugin/manx/history');
 }
 
 function populateHistory(data) {
@@ -99,7 +99,7 @@ function checkSpecialKeywords(word) {
 function runCommand(input) {
  let sessionId = $('#session-id option:selected').attr('value');
  let websocket = $('#websocket-data').data('websocket');
- let socket = new WebSocket('ws://'+websocket+'/terminal/'+sessionId);
+ let socket = new WebSocket('ws://'+websocket+'/manx/'+sessionId);
  socket.onopen = function () {
      socket.send(input);
  };
@@ -158,7 +158,7 @@ function getAbilities() {
          }
      });
  }
- restRequest('POST', {"paw": $('#session-id option:selected').data('paw')}, getAbilitiesCallback, '/plugin/terminal/ability');
+ restRequest('POST', {"paw": $('#session-id option:selected').data('paw')}, getAbilitiesCallback, '/plugin/manx/ability');
 }
 function filterTechniques() {
  let found = [];
