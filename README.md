@@ -1,4 +1,3 @@
-# CALDERA Plugin: Terminal
+# CALDERA Plugin: Manx
 
-The terminal plugin supplies shell access into CALDERA, along with reverse-shell payloads
-for entering/exiting agents manually. 
+The Manx plugin supplies shell access into CALDERA, along with reverse-shell payloads for entering/exiting agents manually. 
