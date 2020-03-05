@@ -5,9 +5,27 @@
 <link rel="stylesheet" href="/manx/css/basic.css">
 <link rel="stylesheet" href="/manx/css/xterm.css"/>
 
-<div id="manx-section" class="section-profile">
+<div id="manx-section-intro" class="section-profile">
+    <div class="row" style="background-image: url('/manx/img/manx.png');">
+        <div class="topleft duk-icon"><img onclick="removeSection('manx-section-intro')" src="/gui/img/x.png"></div>
+        <div class="column" style="flex:40%;padding:15px;text-align: left">
+            <h1 style="font-size:70px;margin-top:-20px;">Manx</h1>
+            <h2 style="margin-top:-55px">a coordinated access trojan (CAT)</h2>
+            <p style="width:40%">
+                The Manx agent, written in GoLang, connects to the server over the TCP <i>contact point</i>.
+                This raw TCP socket connection allows Manx to keep a persistent connection between host-and-server. In
+                addition, each time Manx is downloaded, it is dynamically compiled with a new file hash, to avoid
+                detection. Bundled with Manx is a reverse-shell management tool, called the <i>terminal</i>
+                - see below. In this terminal emulator, as Manx agents call in, you can interact with them as if
+                you had a local shell on the host.
+            </p>
+         </div>
+    </div>
+</div>
+
+<div id="terminal-section" class="section-profile">
     <div class="row">
-         <div class="topleft duk-icon"><img onclick="removeSection('manx-section')" src="/gui/img/x.png"></div>
+         <div class="topleft duk-icon"><img onclick="removeSection('terminal-section')" src="/gui/img/x.png"></div>
          <div class="column" style="flex:100%;padding:15px;text-align: left">
              <div id="filters">
                 <center>
@@ -45,6 +63,7 @@
          </div>
     </div>
 </div>
+
 <script>
     let refresher = setInterval(refresh, 10000);
     $('.section-profile').bind('destroyed', function() {
