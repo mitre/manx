@@ -111,7 +111,7 @@ function runCommand(input) {
             term.write("\r\n"+lines[i]);
          }
          prompt = jData["pwd"];
-         term.write("\r\n"+prompt+' ');
+         term.write("\r\n"+prompt+'$ ');
      } catch(err){
          term.write("\r\n"+'Dead session. Probably. It has been removed.');
          clearTerminal();
