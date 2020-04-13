@@ -182,12 +182,13 @@ function showProcedure() {
     function displayProcedure(data){
         for (let ab of data) {
             let agent = $('#session-id option:selected');
-            if (ab.platform === agent.data("platform") && agent.data("executors").includes(ab.executor)) {
+            if (ab.platform === agent.data("platform") && agent.data("executor") === ab.executor) {
                 term.write(atob(ab.test));
                 input = atob(ab.test);
-                break;
+                return;
             }
         }
+        stream('No ability available for this agent\'s platform an executor combination');
     }
     restRequest('POST', {'index':'abilities','ability_id':$('#procedure-filter').val()}, displayProcedure)
 }
