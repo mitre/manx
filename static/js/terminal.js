@@ -180,9 +180,15 @@ function filterProcedures() {
 }
 function showProcedure() {
     function displayProcedure(data){
-        let a = data[0];
-        term.write(atob(a.test));
-        input = atob(a.test);
+        for (let ab of data) {
+            let agent = $('#session-id option:selected');
+            if (ab.platform === agent.data("platform") && agent.data("executor") === ab.executor) {
+                term.write(atob(ab.test));
+                input = atob(ab.test);
+                return;
+            }
+        }
+        stream('No ability available for this agent\'s platform an executor combination');
     }
     restRequest('POST', {'index':'abilities','ability_id':$('#procedure-filter').val()}, displayProcedure)
 }
@@ -196,3 +202,5 @@ function clearTerminal(){
     prompt = '~$ ';
     term.write("\r\n"+prompt+" ");
 }
+
+//# sourceURL=manxterm.js
