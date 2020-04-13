@@ -21,8 +21,13 @@ class TermApi(BaseService):
     @template('manx.html')
     async def splash(self, request):
         await self.term_svc.socket_conn.tcp_handler.refresh()
-        sessions = [dict(id=s.id, info=s.paw) for s in self.term_svc.socket_conn.tcp_handler.sessions]
-        return dict(sessions=sessions, websocket=self.get_config('app.contact.websocket'))
+        try:
+            sessions = [dict(id=s.id, info=a.paw, platform=a.platform, executors=a.executors)
+                        for s in self.term_svc.socket_conn.tcp_handler.sessions
+                        for a in await self.data_svc.locate('agents', match=dict(paw=s.paw))]
+            return dict(sessions=sessions, websocket=self.get_config('app.contact.websocket'))
+        except Exception as e:
+            print(e)
 
     async def sessions(self, request):
         await self.term_svc.socket_conn.tcp_handler.refresh()

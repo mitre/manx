@@ -34,8 +34,8 @@
                         <select id="session-id"  onchange="getAbilities();clearTerminal();getShellHistory(this);">
                              <option value="" disabled selected>Select a session</option>
                              {% for s in sessions %}
-                                 <option value="{{ s.id }}" data-paw="{{ s.info }}">{{ s.id }} - {{ s.info }}</option>
-                             {% endfor %}}
+                                 <option value="{{ s.id }}" data-paw="{{ s.info }}" data-platform="{{ s.platform }}" data-executors="{{ s.executors }}">{{ s.id }} - {{ s.info }}</option>
+                             {% endfor %}
                         </select>
                         </td>
                         <td>
@@ -87,4 +87,5 @@
         }
         restRequest('POST', null, refreshSessions, '/plugin/manx/sessions')
     }
+    //# sourceURL=manx.js
 </script>
