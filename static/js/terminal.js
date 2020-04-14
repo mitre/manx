@@ -129,19 +129,6 @@ function displayCommand(){
     restRequest('POST', {'index':'abilities','ability_id':cmd.val(),'platform':cmd.text()}, displayMe);
 }
 
-function openLocalDuk() {
- document.getElementById("duk-modal").style.display="block";
-$('#duk-text').text('Did you know... you can also deploy a new reverse-shell by running an operation using ' +
-    'the terminal adversary. Make sure you also use the terminal facts, which contain the location of the ' +
-    'TCP socket. You will need to update this value if you are running anywhere but localhost.');
-}
-
-function openLocalDuk2() {
- document.getElementById("duk-modal").style.display="block";
-$('#duk-text').text('Did you know... there are a handful of special commands you can run in a session. ' +
-    'Check the documentation for a full list.');
-}
-
 // ability filter options
 
 let ABILITIES = [];
