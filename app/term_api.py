@@ -5,8 +5,10 @@ from aiohttp_jinja2 import template
 
 from app.utility.base_service import BaseService
 from plugins.manx.app.term_svc import TermService
+from app.service.auth_svc import for_all_public_methods, check_authorization
 
 
+@for_all_public_methods(check_authorization)
 class TermApi(BaseService):
 
     def __init__(self, services):
