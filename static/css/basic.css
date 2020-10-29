@@ -19,7 +19,3 @@
 .ability-filter tr td {
     width: 22%;
 }
-.ability-filter select {
-    background-color: transparent;
-    color: white;
-}
