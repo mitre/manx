@@ -98,11 +98,19 @@ function checkSpecialKeywords(word) {
 
 function runCommand(input) {
  let sessionId = $('#session-id option:selected').attr('value');
- let websocket = $('#websocket-data').data('websocket');
- let socket = new WebSocket('ws://'+websocket+'/manx/'+sessionId);
+ var [wsHost, wsPort] = $('#websocket-data').data('websocket').split(':');
+
+ if (wsHost === '0.0.0.0'){
+    console.log('WebSocket host configured for 0.0.0.0. Using window location for host/ip instead.');
+    wsHost = window.location.hostname;
+ }
+
+ var socket = new WebSocket('ws://' + wsHost + ':' + wsPort + '/manx/' + sessionId);
+
  socket.onopen = function () {
      socket.send(input);
  };
+
  socket.onmessage = function (s) {
      try {
          let jData = JSON.parse(s.data);
