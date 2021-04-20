@@ -130,7 +130,7 @@ function runCommand(input) {
 
 function displayCommand(){
     function displayMe(data){
-        $('#delivery-command-terminal').text(atob(data[0].test));
+        $('#delivery-command-terminal').text(b64DecodeUnicode(data[0].test));
     }
     let cmd = $('#dcommands-terminal option:selected');
     stream('Great, you picked '+cmd.text()+'. Now run the command on the host. It will run in the background - but you can change this if you would like.');
@@ -178,8 +178,8 @@ function showProcedure() {
         for (let ab of data) {
             let agent = $('#session-id option:selected');
             if (ab.platform === agent.data("platform") && agent.data("executor") === ab.executor) {
-                term.write(atob(ab.test));
-                input = atob(ab.test);
+                term.write(b64DecodeUnicode(ab.test));
+                input = b64DecodeUnicode(ab.test);
                 return;
             }
         }
