@@ -178,8 +178,8 @@ function showProcedure() {
         for (let ab of data) {
             let agent = $('#session-id option:selected');
             if (ab.platform === agent.data("platform") && agent.data("executor") === ab.executor) {
-                term.write(b64DecodeUnicode(ab.test));
                 input = b64DecodeUnicode(ab.test);
+                term.write(input);
                 return;
             }
         }
