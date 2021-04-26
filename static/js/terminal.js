@@ -105,7 +105,9 @@ function runCommand(input) {
     wsHost = window.location.hostname;
  }
 
- var socket = new WebSocket('ws://' + wsHost + ':' + wsPort + '/manx/' + sessionId);
+ var protocol = (location.protocol == 'https:') ? 'wss://' : 'ws://';
+
+ var socket = new WebSocket(protocol + wsHost + ':' + wsPort + '/manx/' + sessionId);
 
  socket.onopen = function () {
      socket.send(input);
