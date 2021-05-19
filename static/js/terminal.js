@@ -174,13 +174,15 @@ function filterProcedures() {
     });
 }
 function showProcedure() {
-    function displayProcedure(data){
+    function displayProcedure(data) {
+        let agent = $('#session-id option:selected');
         for (let ab of data) {
-            let agent = $('#session-id option:selected');
-            if (ab.platform === agent.data("platform") && agent.data("executor") === ab.executor) {
-                term.write(atob(ab.test));
-                input = atob(ab.test);
-                return;
+            for (let executor of ab.executors) {
+                if (executor.platform === agent.data('platform') && agent.data('executor') === executor.name) {
+                    term.write(executor.command);
+                    input = executor.command;
+                    return;
+                }
             }
         }
         stream('No ability available for this agent\'s platform an executor combination');
