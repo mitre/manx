@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	"time"
 	"os/exec"
 	"strings"
 )
@@ -52,4 +53,8 @@ func DetermineExecutors(executors []string, platform string, arch string) []stri
 func checkIfExecutorAvailable(executor string) bool {
 	_, err := exec.LookPath(executor)
 	return err == nil
+}
+
+func GetFormattedTimestamp(timestamp time.Time, dateFormat string) (string) {
+    return timestamp.Format(dateFormat)
 }

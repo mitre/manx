@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 
 	"../commands"
+	"../util"
 	"../output"
 )
 
@@ -39,12 +40,13 @@ func listen(conn net.Conn, profile map[string]interface{}, server string) {
     scanner := bufio.NewScanner(conn)
     for scanner.Scan() {
         message := scanner.Text()
-		bites, status := commands.RunCommand(strings.TrimSpace(message), server, profile)
+		bites, status, commandTimestamp := commands.RunCommand(strings.TrimSpace(message), server, profile)
 		pwd, _ := os.Getwd()
 		response := make(map[string]interface{})
 		response["response"] = string(bites)
 		response["status"] = status
 		response["pwd"] = pwd
+		response["agent_reported_time"] = util.GetFormattedTimestamp(commandTimestamp, "2006-01-02 03:04:05")
 		jdata, _ := json.Marshal(response)
 		conn.Write(jdata)
     }
