@@ -9,9 +9,9 @@ import (
 	"os"
 	"encoding/json"
 
-	"../commands"
-	"../util"
-	"../output"
+	"manx.go/commands"
+	"manx.go/util"
+	"manx.go/output"
 )
 
 //TCP communication

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./output"
-	"./sockets"
-	"./util"
+	"manx.go/output"
+	"manx.go/sockets"
+	"manx.go/util"
 	"flag"
 	"fmt"
 	"os"

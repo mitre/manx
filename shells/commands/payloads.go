@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"path/filepath"
 
-	"../output"
+	"manx.go/output"
 )
 
 //DropPayloads downloads all required payloads for a command

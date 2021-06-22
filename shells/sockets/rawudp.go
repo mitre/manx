@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"encoding/json"
 	
-	"../output"
+	"manx.go/output"
 )
 
 //UDP communication
