@@ -1,9 +1,9 @@
 package main
 
 import (
-	"manx.go/output"
-	"manx.go/sockets"
-	"manx.go/util"
+	"github.com/mitre/manx/shells/output"
+	"github.com/mitre/manx/shells/sockets"
+	"github.com/mitre/manx/shells/util"
 	"flag"
 	"fmt"
 	"os"

@@ -1,3 +1,5 @@
+import os
+import pathlib
 from shutil import which
 
 from aiohttp import web
@@ -52,6 +54,7 @@ class TermApi(BaseService):
             for param in ['contact', 'socket', 'http']:
                 if param in headers:
                     ldflags.append('-X main.%s=%s' % (param, headers[param]))
-            output = 'plugins/%s/payloads/%s-%s' % (plugin, name, platform)
-            await self.file_svc.compile_go(platform, output, file_path, ldflags=' '.join(ldflags))
+            output = str(pathlib.Path('plugins/%s/payloads' % plugin).resolve() / ('%s-%s' % (name, platform)))
+            build_path, build_file = os.path.split(file_path)
+            await self.file_svc.compile_go(platform, output, build_file, ldflags=' '.join(ldflags), build_dir=build_path)
         return await self.app_svc.retrieve_compiled_file(name, platform)

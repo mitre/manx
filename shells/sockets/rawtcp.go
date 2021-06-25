@@ -9,9 +9,9 @@ import (
 	"os"
 	"encoding/json"
 
-	"manx.go/commands"
-	"manx.go/util"
-	"manx.go/output"
+	"github.com/mitre/manx/shells/commands"
+	"github.com/mitre/manx/shells/util"
+	"github.com/mitre/manx/shells/output"
 )
 
 //TCP communication

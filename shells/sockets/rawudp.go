@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"encoding/json"
 	
-	"manx.go/output"
+	"github.com/mitre/manx/shells/output"
 )
 
 //UDP communication
