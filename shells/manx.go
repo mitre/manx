@@ -20,14 +20,14 @@ var (
    http = "http://localhost:8888"
 )
 
-func buildProfile(socket string, executors []string) map[string]interface{} {
+func buildProfile(socket string, http string, executors []string) map[string]interface{} {
 	host, _ := os.Hostname()
 	user, _ := user.Current()
 	platform := runtime.GOOS
 	architecture := runtime.GOARCH
 
 	profile := make(map[string]interface{})
-	profile["server"] = socket
+	profile["server"] = http
 	profile["host"] = host
 	profile["username"] = user.Username
 	profile["architecture"] = runtime.GOARCH
@@ -50,7 +50,7 @@ func main() {
 	flag.Var(&executors, "executors", "Comma separated list of executors (first listed is primary)")
 	flag.Parse()
 
-	profile := buildProfile(*socket, executors)
+	profile := buildProfile(*socket, *http, executors)
 
 	output.SetVerbose(*verbose)
 	output.VerbosePrint(fmt.Sprintf("[*] %s outbound socket %s, inbound at %d", *contact, *socket, *inbound))
