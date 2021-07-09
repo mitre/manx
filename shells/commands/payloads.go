@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"path/filepath"
 
-	"../output"
+	"github.com/mitre/manx/shells/output"
 )
 
 //DropPayloads downloads all required payloads for a command

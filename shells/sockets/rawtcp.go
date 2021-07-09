@@ -9,9 +9,9 @@ import (
 	"os"
 	"encoding/json"
 
-	"../commands"
-	"../util"
-	"../output"
+	"github.com/mitre/manx/shells/commands"
+	"github.com/mitre/manx/shells/util"
+	"github.com/mitre/manx/shells/output"
 )
 
 //TCP communication
