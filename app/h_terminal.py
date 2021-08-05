@@ -17,5 +17,5 @@ class Handle:
         services.get('contact_svc').report['websocket'].append(
             dict(paw=paw, date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), cmd=cmd)
         )
-        status, pwd, reply = await handler.send(session_id, cmd)
-        await socket.send(json.dumps(dict(response=reply.strip(), pwd=pwd)))
+        status, pwd, reply, response_time = await handler.send(session_id, cmd)
+        await socket.send(json.dumps(dict(response=reply.strip(), pwd=pwd, status=status, response_time=response_time)))
