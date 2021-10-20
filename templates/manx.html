@@ -162,21 +162,20 @@
             },
 
             getProcedure() {
+                const getCommands = (self, data) => {
+                    if (data) {
+                        data = JSON.parse(data);
+                        data.forEach((ability) => {
+                            const executor = ability.executors.find((e) => e.platform === self.selectedSession.platform && e.name === self.selectedSession.executors[0]);
+                            self.terminalCommand = executor ? executor.command : '';
+                        });
+                    }
+                };
                 restRequest('POST', {
                     index: 'abilities',
                     ability_id: this.selectedProcedureID
-                }, (self, data) => {
-                    data = JSON.parse(`{"0":${data}}`);
-                    console.log('data', typeof data);
-                    console.log(data);
-                    self.terminalCommand = data[0].forEach((ability) => {
-                        ability.executors.find((e) => {
-                            const session = self.selectedSession;
-                            if (e.platform === session.platform && e.name === session.executors[0]) {
-                                return e.command;
-                            } return '';
-                        });
-                    });
+                }, (data) => {
+                    getCommands(this, data);
                 });
             }
         };
