@@ -1,7 +1,6 @@
 <meta id="websocket-data" data-websocket="{{ websocket }}">
 
-<script src="/manx/js/xterm.js"></script>
-<!--<script type="module" src="/manx/js/terminal.js"></script>-->
+<script type="module" src="/manx/js/terminal.js"></script>
 <link rel="stylesheet" href="/manx/css/basic.css">
 <link rel="stylesheet" href="/manx/css/xterm.css"/>
 
@@ -66,13 +65,11 @@
             </div>
         </div>
         <br>
-        <div x-text="terminalCommand" id="xterminal"></div>
+        <div id="xterminal" x-init="initTerminal()"></div>
     </div>
 </div>
 
 <script>
-    // const { Terminal } = require('../static/js/terminal');
-
     function alpineManx() {
         return {
             sessions: JSON.parse('{{ sessions | tojson }}'),
@@ -84,6 +81,7 @@
             selectedTechniqueID: '',
             selectedProcedureID: '',
             terminalCommand: '',
+            term: null,
 
             get sessionIDs() {
                 return this.sessions ? this.sessions.flatMap((s) => s.info) : [];
@@ -118,7 +116,6 @@
             getShellHistory() {
                 function populateHistory() {
                 }
-
                 restRequest('POST', { paw: this.selectedSession.paw }, populateHistory, '/plugin/manx/history');
             },
 
@@ -180,8 +177,6 @@
             }
         };
     }
-
-    // const term = new Terminal();
 
     // # sourceURL=manx.js
 </script>
