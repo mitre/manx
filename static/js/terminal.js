@@ -100,7 +100,7 @@ function populateHistory(data) {
 
 function displayHistory() {
     for (let i = 0; i < shellHistory.length - 1; i++) {
-        term.write('\r\n[' + i + ']  ' + shellHistory[i]);
+        term.write(`\r\n[${i}]  ${shellHistory[i]}`);
     }
 }
 
@@ -113,95 +113,40 @@ function checkSpecialKeywords(word) {
     return false;
 }
 
-function runCommand(input) {
-    let sessionId = $('#session-id option:selected').attr('value');
-    var [wsHost, wsPort] = $('#websocket-data').data('websocket').split(':');
+function runCommand(cmd) {
+    const el = document.getElementById('session-id');
+    let sessionId = el.options[el.selectedIndex].value;
+    let [wsHost, wsPort] = document.getElementById('websocket-data').getAttribute('data-websocket').split(':');
 
     if (wsHost === '0.0.0.0') {
         console.log('WebSocket host configured for 0.0.0.0. Using window location for host/ip instead.');
         wsHost = window.location.hostname;
     }
 
-    var wsProto = (location.protocol == 'https:') ? 'wss://' : 'ws://';
+    const wsProto = (location.protocol == 'https:') ? 'wss://' : 'ws://';
 
     const x = `${wsProto + wsHost}:${wsPort}/manx/${sessionId}`;
-    var socket = new WebSocket(x);
+    const socket = new WebSocket(x);
 
     socket.onopen = function () {
-        socket.send(input);
+        socket.send(cmd);
     };
 
     socket.onmessage = function (s) {
         try {
             let jData = JSON.parse(s.data);
-            let lines = jData['response'].split('\n');
+            let lines = jData.response.split('\n');
             for (let i = 0; i < lines.length; i++) {
-                term.write('\r\n' + lines[i]);
+                term.write(`\r\n${lines[i]}`);
             }
-            prompt = jData['pwd'];
-            term.write('\r\n' + prompt + '$ ');
+            prompt = jData.pwd;
+            term.write(`\r\n${prompt}$ `);
         } catch (err) {
-            term.write('\r\n' + 'Dead session. Probably. It has been removed.');
+            term.write('\r\nDead session. Probably. It has been removed.');
             clearTerminal();
-            // $('#session-id option:selected').remove();
+            el.selectedIndex = 0;
         }
     };
-}
-
-// ability filter options
-
-let ABILITIES = [];
-function getAbilities() {
-    function getAbilitiesCallback(data) {
-        $('#tactic-filter').empty().append('<option disabled=\'disabled\' selected>Choose a tactic</option>');
-        ABILITIES = [];
-        let found = [];
-        data.abilities.forEach(function (ability) {
-            ABILITIES.push(ability);
-            if (!found.includes(ability.tactic)) {
-                $('#tactic-filter').append('<option value="' + ability.tactic + '">' + ability.tactic + '</option>');
-                found.push(ability.tactic);
-            }
-        });
-    }
-
-    restRequest('POST', { 'paw': $('#session-id option:selected').data('paw') }, getAbilitiesCallback, '/plugin/manx/ability');
-}
-
-function filterTechniques() {
-    let found = [];
-    $('#technique-filter').empty().append('<option disabled=\'disabled\' selected>Choose a technique</option>');
-    ABILITIES.forEach(function (ability) {
-        if (ability.tactic === $('#tactic-filter').val() && !found.includes(ability.technique_id)) {
-            $('#technique-filter').append('<option value="' + ability.technique_id + '">' + ability.technique_id + ' | ' + ability.technique_name + '</option>');
-            found.push(ability.technique_id);
-        }
-    });
-}
-
-function filterProcedures() {
-    $('#procedure-filter').empty().append('<option disabled=\'disabled\' selected>Choose a procedure</option>');
-    ABILITIES.forEach(function (ability) {
-        if (ability.tactic === $('#tactic-filter').val() && ability.technique_id === $('#technique-filter').val()) {
-            $('#procedure-filter').append('<option value="' + ability.ability_id + '">' + ability.name + '</option>');
-        }
-    });
-}
-function showProcedure() {
-    function displayProcedure(data) {
-        let agent = $('#session-id option:selected');
-        for (let ab of data) {
-            for (let executor of ab.executors) {
-                if (executor.platform === agent.data('platform') && agent.data('executor') === executor.name) {
-                    term.write(b64DecodeUnicode(executor.command));
-                    input = executor.command;
-                    return;
-                }
-            }
-        }
-        stream('No ability available for this agent\'s platform an executor combination');
-    }
-    restRequest('POST', {'index':'abilities','ability_id':$('#procedure-filter').val()}, displayProcedure)
 }
 
 function clearTerminal() {
@@ -211,7 +156,7 @@ function clearTerminal() {
     shellHistoryIndex = 0;
     input = '';
     prompt = '~$ ';
-    term.write('\r\n' + prompt + ' ');
+    term.write(`\r${prompt} `);
 }
 
 //# sourceURL=manxterm.js

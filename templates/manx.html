@@ -66,7 +66,7 @@
             </div>
         </div>
         <br>
-        <div style="visibility:hidden" id="xterminal-command" x-text="terminalCommand"></div>
+        <div style="visibility:hidden;position:absolute" id="xterminal-command" x-text="terminalCommand"></div>
         <div id="xterminal"></div>
     </div>
 </div>
@@ -162,13 +162,13 @@
 
             getProcedure() {
                 const getCommands = (self, data) => {
-                    if (data) {
+                    if (data && data.length > 0) {
                         data = JSON.parse(data);
                         data.forEach((ability) => {
                             const executor = ability.executors.find((e) => e.platform === self.selectedSession.platform && e.name === self.selectedSession.executors[0]);
                             self.terminalCommand = executor ? executor.command : '';
                         });
-                    }
+                    } else toast('No ability available for this agent\'s platform an executor combination');
                 };
                 restRequest('POST', {
                     index: 'abilities',
