@@ -16,8 +16,8 @@ loadCommand();
 
 async function loadCommand() {
     while (term) {
-        await sleep(3000);
-        const cmd = document.getElementById('xterminal-command').innerText;
+        await sleep(1500);
+        const cmd = document.getElementById('xterminal-command').textContent;
         if (cmd) {
             term.write(cmd);
             input = cmd;
