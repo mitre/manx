@@ -15,6 +15,11 @@ term.write(prompt);
 loadCommand();
 
 async function loadCommand() {
+    const el = document.getElementById('session-id');
+    el.addEventListener('change', () => {
+        clearTerminal();
+        getShellHistory(el);
+    });
     while (term) {
         await sleep(1500);
         const cmd = document.getElementById('xterminal-command').textContent;
@@ -85,7 +90,7 @@ function writeHistory(value) {
 }
 
 function getShellHistory(elem) {
-    restRequest('POST', { 'paw': elem.options[elem.selectedIndex].getAttribute('data-paw') }, populateHistory, endpoint = '/plugin/manx/history');
+    if (elem.options && elem.selectedIndex) restRequest('POST', { 'paw': elem.options[elem.selectedIndex].getAttribute('data-paw') }, populateHistory, '/plugin/manx/history');
 }
 
 function populateHistory(data) {

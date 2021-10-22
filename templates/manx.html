@@ -24,12 +24,10 @@
     <div class="is-flex is-flex-direction-column">
         <h3>Terminal</h3>
         <div class="is-flex is-flex-direction-row is-justify-content-space-around">
-            <!--                    <table class="ability-filter" frame=void rules=rows style="border-spacing:5px;width:100%">-->
             <div class="select is-small">
                 <select id="session-id"
                         x-model="selectedSessionID"
-                        x-on:change="getTactics(); getShellHistory(this);">
-                    <!--                                //;clearTerminal();">-->
+                        x-on:change="getTactics()">
                     <option value="" disabled selected>Select a session</option>
                     <template x-for="s in sessions" :key="s.id">
                         <option x-bind:value="s.id" x-bind:data-paw="s.info"
@@ -113,12 +111,6 @@
                 this.selectedTacticName = '';
                 this.selectedTechniqueID = '';
                 this.selectedProcedureID = '';
-            },
-
-            getShellHistory() {
-                function populateHistory() {
-                }
-                restRequest('POST', { paw: this.selectedSession.paw }, populateHistory, '/plugin/manx/history');
             },
 
             getTactics() {
