@@ -12,6 +12,19 @@ let shellHistory = [];
 let shellHistoryIndex = 0;
 
 term.write(prompt);
+loadCommand();
+
+async function loadCommand() {
+    while (term) {
+        await sleep(3000);
+        const cmd = document.getElementById('xterminal-command').innerText;
+        if (cmd) {
+            term.write(cmd);
+            input = cmd;
+            document.getElementById('xterminal-command').innerText = '';
+        }
+    }
+}
 
 term.onData((data) => {
     const code = data.charCodeAt(0);
@@ -111,7 +124,8 @@ function runCommand(input) {
 
     var wsProto = (location.protocol == 'https:') ? 'wss://' : 'ws://';
 
-    var socket = new WebSocket(wsProto + wsHost + ':' + wsPort + '/manx/' + sessionId);
+    const x = `${wsProto + wsHost}:${wsPort}/manx/${sessionId}`;
+    var socket = new WebSocket(x);
 
     socket.onopen = function () {
         socket.send(input);
@@ -129,7 +143,7 @@ function runCommand(input) {
         } catch (err) {
             term.write('\r\n' + 'Dead session. Probably. It has been removed.');
             clearTerminal();
-            $('#session-id option:selected').remove();
+            // $('#session-id option:selected').remove();
         }
     };
 }
@@ -179,7 +193,7 @@ function showProcedure() {
         for (let ab of data) {
             for (let executor of ab.executors) {
                 if (executor.platform === agent.data('platform') && agent.data('executor') === executor.name) {
-                    term.write(executor.command);
+                    term.write(b64DecodeUnicode(executor.command));
                     input = executor.command;
                     return;
                 }

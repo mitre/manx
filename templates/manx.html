@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/manx/css/basic.css">
 <link rel="stylesheet" href="/manx/css/xterm.css"/>
 
-<div x-data="alpineManx()" x-init="initPage(); $watch('selectedSessionInfo', () => resetFields())">
+<div x-data="alpineManx()" x-init="initPage(); $watch('selectedSessionID', () => resetFields())">
     <div x-ref="header">
         <h2>Manx</h2>
         <p class="has-text-weight-bold">
@@ -26,12 +26,13 @@
         <div class="is-flex is-flex-direction-row is-justify-content-space-around">
             <!--                    <table class="ability-filter" frame=void rules=rows style="border-spacing:5px;width:100%">-->
             <div class="select is-small">
-                <select x-model="selectedSessionInfo"
+                <select id="session-id"
+                        x-model="selectedSessionID"
                         x-on:change="getTactics(); getShellHistory(this);">
                     <!--                                //;clearTerminal();">-->
                     <option value="" disabled selected>Select a session</option>
                     <template x-for="s in sessions" :key="s.id">
-                        <option x-bind:value="s.info" x-bind:data-paw="s.info"
+                        <option x-bind:value="s.id" x-bind:data-paw="s.info"
                                 x-bind:data-platform="s.platform"
                                 x-bind:data-executor="s.executors[0]"
                                 x-text="s.id + ' - ' + s.info"></option>
@@ -56,7 +57,7 @@
                 </select>
             </div>
             <div class="select is-small">
-                <select x-model="selectedProcedureID" x-on:change="getProcedure()">
+                <select id="procedure-filter" x-model="selectedProcedureID" x-on:change="getProcedure();">
                     <option value="" disabled selected>Select a procedure</option>
                     <template x-for="p in procedures">
                         <option x-text="p.name" x-bind:value="p.ability_id"></option>
@@ -65,7 +66,8 @@
             </div>
         </div>
         <br>
-        <div id="xterminal" x-init="initTerminal()"></div>
+        <div style="visibility:hidden" id="xterminal-command" x-text="terminalCommand"></div>
+        <div id="xterminal"></div>
     </div>
 </div>
 
@@ -76,7 +78,7 @@
             tactics: [],
             techniques: [],
             procedures: [],
-            selectedSessionInfo: '',
+            selectedSessionID: '',
             selectedTacticName: '',
             selectedTechniqueID: '',
             selectedProcedureID: '',
@@ -84,11 +86,11 @@
             term: null,
 
             get sessionIDs() {
-                return this.sessions ? this.sessions.flatMap((s) => s.info) : [];
+                return this.sessions ? this.sessions.flatMap((s) => s.id) : [];
             },
 
             get selectedSession() {
-                return this.sessions ? this.sessions.find((s) => s.info === this.selectedSessionInfo) : '';
+                return this.sessions ? (this.sessions.find((s) => s.id.toString() === this.selectedSessionID.toString())) : null;
             },
 
             async initPage() {
@@ -100,7 +102,7 @@
 
             refreshManx() {
                 apiV2('POST', '/plugin/manx/sessions').then((sessions) => {
-                    this.sessions = this.sessions.concat(sessions.filter((s) => !this.sessionIDs.includes(s.info)));
+                    this.sessions = this.sessions.concat(sessions.filter((s) => !this.sessionIDs.includes(s.id)));
                 }).catch((error) => {
                     toast('Error refreshing manx', false);
                     console.error(error);
@@ -133,7 +135,7 @@
                     }
                 };
 
-                restRequest('POST', { paw: this.selectedSessionInfo }, (data) => {
+                restRequest('POST', { paw: this.selectedSession.info }, (data) => {
                     getUniqueAbilities(this, data);
                 }, '/plugin/manx/ability');
             },
