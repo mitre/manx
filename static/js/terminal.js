@@ -144,8 +144,8 @@ function runCommand(cmd) {
             for (let i = 0; i < lines.length; i++) {
                 term.write(`\r\n${lines[i]}`);
             }
-            prompt = jData.pwd;
-            term.write(`\r\n${prompt}$ `);
+            prompt = `${jData.pwd}$ `;
+            term.write(`\r\n${prompt}`);
         } catch (err) {
             term.write('\r\nDead session. Probably. It has been removed.');
             clearTerminal();
