@@ -161,7 +161,7 @@ function clearTerminal() {
     shellHistoryIndex = 0;
     input = '';
     prompt = '~$ ';
-    term.write(`\r${prompt} `);
+    term.write(`\r${prompt}`);
 }
 
 //# sourceURL=manxterm.js
