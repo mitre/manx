@@ -160,7 +160,7 @@
                             const executor = ability.executors.find((e) => e.platform === self.selectedSession.platform && e.name === self.selectedSession.executors[0]);
                             self.terminalCommand = executor ? executor.command : '';
                         });
-                    } else toast('No ability available for this agent\'s platform an executor combination');
+                    } else toast('No ability available for this agent\'s platform and executor combination');
                 };
                 restRequest('POST', {
                     index: 'abilities',
