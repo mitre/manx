@@ -84,7 +84,7 @@ function handleDownArrow() {
 }
 
 function writeHistory(value) {
-    term.write(`^[[2K\r ${prompt} `);
+    term.write(`\x1b[2K\r${prompt}`);
     term.write(value);
     input = value;
 }
