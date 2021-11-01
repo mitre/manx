@@ -155,7 +155,7 @@ function runCommand(cmd) {
 }
 
 function clearTerminal() {
-    term.write(`^[[2K\r`);
+    term.write(`\x1b[2K\r`);
     term.clear();
     shellHistory = [];
     shellHistoryIndex = 0;
