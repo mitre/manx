@@ -41,7 +41,7 @@ term.onData((data) => {
             shellHistory.push('');
             shellHistoryIndex = shellHistory.length - 1;
         } else {
-            term.write(`\r\n ${prompt} `);
+            term.write(`\r\n${prompt}`);
         }
         input = '';
     } else if (code === 127) {
