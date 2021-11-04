@@ -23,7 +23,7 @@
     <hr>
     <div class="is-flex is-flex-direction-column">
         <h3>Terminal</h3>
-        <div class="is-flex is-flex-direction-row is-justify-content-space-around">
+        <div class="is-flex is-flex-direction-row is-justify-content-space-around mb-5">
             <div class="select is-small">
                 <select id="session-id"
                         x-model="selectedSessionID"
@@ -63,7 +63,6 @@
                 </select>
             </div>
         </div>
-        <br>
         <div style="visibility:hidden;position:absolute" id="xterminal-command" x-text="terminalCommand"></div>
         <div id="xterminal"></div>
     </div>
