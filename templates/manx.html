@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/manx/css/basic.css">
 <link rel="stylesheet" href="/manx/css/xterm.css"/>
 
-<div x-data="alpineManx()" x-init="initPage(); $watch('selectedSessionID', () => resetFields())">
+<div id="manxPage" x-data="alpineManx()" x-init="initPage(); $watch('selectedSessionID', () => resetFields())">
     <div x-ref="header">
         <h2>Manx</h2>
         <p class="has-text-weight-bold">
@@ -32,7 +32,7 @@
                     <template x-for="s in sessions" :key="s.id">
                         <option x-bind:value="s.id" x-bind:data-paw="s.info"
                                 x-bind:data-platform="s.platform"
-                                x-bind:data-executor="s.executors[0]"
+                                x-bind:data-executor="s.executors ? s.executors[0] : 'sh'"
                                 x-text="s.id + ' - ' + s.info"></option>
                     </template>
                 </select>
@@ -71,6 +71,9 @@
 <script>
     function alpineManx() {
         return {
+            DEFAULT_EXECUTORS: ['sh'],
+            DEFAULT_PLATFORM: 'darwin',
+
             sessions: JSON.parse('{{ sessions | tojson }}'),
             tactics: [],
             techniques: [],
@@ -80,7 +83,6 @@
             selectedTechniqueID: '',
             selectedProcedureID: '',
             terminalCommand: '',
-            term: null,
 
             get sessionIDs() {
                 return this.sessions ? this.sessions.flatMap((s) => s.id) : [];
@@ -99,7 +101,8 @@
 
             refreshManx() {
                 apiV2('POST', '/plugin/manx/sessions').then((sessions) => {
-                    this.sessions = this.sessions.concat(sessions.filter((s) => !this.sessionIDs.includes(s.id)));
+                    // Join new manx agents in array, and assign default platform and executors if DNE
+                    this.sessions = this.sessions.concat(sessions.map((s) => ({ ...s, platform: s.platform || this.DEFAULT_PLATFORM, executors: s.executors || [this.DEFAULT_EXECUTORS] })).filter((s) => !this.sessionIDs.includes(s.id)));
                 }).catch((error) => {
                     toast('Error refreshing manx', false);
                     console.error(error);

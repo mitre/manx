@@ -1,20 +1,18 @@
 import * as Terminal from './xterm.js';
 
-// build terminal emulator
-let prompt = '~$ ';
-let term = new window.Terminal();
-term.setOption('cursorBlink', true);
-term.open(document.getElementById('xterminal'));
-
 // run terminal emulator
 let input = '';
 let shellHistory = [];
 let shellHistoryIndex = 0;
 
-term.write(prompt);
+// build terminal emulator
+let prompt = '~$ ';
+let term = null;
+
 loadCommand();
 
 async function loadCommand() {
+    if (!initTerm()) return;
     const el = document.getElementById('session-id');
     el.addEventListener('change', () => {
         clearTerminal();
@@ -22,13 +20,25 @@ async function loadCommand() {
     });
     while (term) {
         await sleep(1500);
-        const cmd = document.getElementById('xterminal-command').textContent;
+        const cmd = document.getElementById('xterminal-command')?.textContent;
         if (cmd) {
             term.write(cmd);
             input = cmd;
             document.getElementById('xterminal-command').innerText = '';
         }
     }
+}
+
+function initTerm() {
+    if (!document.querySelector('#manxPage')) {
+        term = null;
+        return false;
+    }
+    term = new window.Terminal();
+    term.setOption('cursorBlink', true);
+    term.open(document.getElementById('xterminal'));
+    term.write(prompt);
+    return true;
 }
 
 term.onData((data) => {
