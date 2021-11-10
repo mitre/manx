@@ -11,8 +11,6 @@ let prompt = '~$ ';
 let term;
 let fitAddon;
 
-loadCommand();
-
 async function loadCommand() {
     if (!initTerm()) return;
     const el = document.getElementById('session-id');
@@ -31,6 +29,9 @@ async function loadCommand() {
     }
 }
 
+window.loadManxTerm = loadCommand;
+loadCommand();
+
 function initTerm() {
     if (!document.querySelector('#manxPage')) {
         term = null;
@@ -46,7 +47,7 @@ function initTerm() {
     return true;
 }
 
-term.onData((data) => {
+term?.onData((data) => {
     const code = data.charCodeAt(0);
     if (code === 13) {
         if (input !== '' && !checkSpecialKeywords(input)) {

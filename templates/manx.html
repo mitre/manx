@@ -94,6 +94,9 @@
 
             async initPage() {
                 while (this.$refs.header) {
+                    if (!document.querySelector('.xterm-cursor-layer') && window.loadManxTerm) {
+                        window.loadManxTerm();
+                    }
                     await sleep(3000);
                     this.refreshManx();
                 }
