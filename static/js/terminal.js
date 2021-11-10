@@ -1,4 +1,5 @@
 import * as Terminal from './xterm.js';
+import * as FitAddon from './xterm-addon-fit.min.js';
 
 // run terminal emulator
 let input = '';
@@ -7,7 +8,8 @@ let shellHistoryIndex = 0;
 
 // build terminal emulator
 let prompt = '~$ ';
-let term = null;
+let term;
+let fitAddon;
 
 loadCommand();
 
@@ -35,8 +37,11 @@ function initTerm() {
         return false;
     }
     term = new window.Terminal();
+    fitAddon = new window.FitAddon.FitAddon();
+    term.loadAddon(fitAddon);
     term.setOption('cursorBlink', true);
     term.open(document.getElementById('xterminal'));
+    fitAddon.fit();
     term.write(prompt);
     return true;
 }
