@@ -110,6 +110,7 @@
     position: absolute;
     left: 0;
     top: 0;
+    padding: 12px 10px;
 }
 
 .xterm .xterm-scroll-area {
