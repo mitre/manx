@@ -16,7 +16,7 @@ class Handle:
         cmd = await socket.recv()
         handler = services.get('term_svc').socket_conn.tcp_handler
         paw = next(i.paw for i in handler.sessions if i.id == int(session_id))
-        services.get('contact_svc').report['WEBSOCKET'].append(
+        services.get('contact_svc').report['websocket'].append(
             dict(paw=paw, date=datetime.now(timezone.utc).strftime(BaseWorld.TIME_FORMAT), cmd=cmd)
         )
         status, pwd, reply, response_time = await handler.send(session_id, cmd)
