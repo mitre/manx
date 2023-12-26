@@ -18,6 +18,7 @@ async def enable(services):
 
     app.router.add_static('/manx', 'plugins/manx/static/', append_version=True)
     app.router.add_route('GET', '/plugin/manx/gui', term_api.splash)
+    app.router.add_route('GET', '/plugin/manx/sessions', term_api.get_sessions)
     app.router.add_route('POST', '/plugin/manx/sessions', term_api.sessions)
     app.router.add_route('POST', '/plugin/manx/history', term_api.get_history)
     app.router.add_route('POST', '/plugin/manx/ability', term_api.get_abilities)
