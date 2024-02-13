@@ -31,6 +31,13 @@ class TermApi(BaseService):
         except Exception as e:
             print(e)
 
+    async def get_sessions(self, request):
+        await self.term_svc.socket_conn.tcp_handler.refresh()
+        sessions = [dict(id=s.id, info=a.paw, platform=a.platform, executors=a.executors)
+                    for s in self.term_svc.socket_conn.tcp_handler.sessions
+                    for a in await self.data_svc.locate('agents', match=dict(paw=s.paw))]
+        return web.json_response(dict(sessions=sessions))
+
     async def sessions(self, request):
         await self.term_svc.socket_conn.tcp_handler.refresh()
         sessions = [dict(id=s.id, info=s.paw) for s in self.term_svc.socket_conn.tcp_handler.sessions]
