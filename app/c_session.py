@@ -1,4 +1,5 @@
 from app.utility.base_object import BaseObject
+from plugins.manx.app.c_connection import Connection
 
 
 class Session(BaseObject):
@@ -7,7 +8,7 @@ class Session(BaseObject):
     def unique(self):
         return self.hash('%s' % self.paw)
 
-    def __init__(self, id, paw, connection):
+    def __init__(self, id, paw, connection: Connection):
         super().__init__()
         self.id = id
         self.paw = paw
