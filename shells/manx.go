@@ -42,9 +42,9 @@ func buildProfile(socket string, executors []string) map[string]interface{} {
 
 func main() {
 	var executors util.ListFlags
-	contact := flag.String("contact", "tcp", "Which contact to use")
-	socket := flag.String("socket", "0.0.0.0:7010", "The ip:port of the socket listening post")
-	http := flag.String("http", "http://127.0.0.1:8888", "The FQDN of the HTTP listening post")
+	contact := flag.String("contact", contact, "Which contact to use")
+	socket := flag.String("socket", socket, "The ip:port of the socket listening post")
+	http := flag.String("http", http, "The FQDN of the HTTP listening post")
 	inbound := flag.Int("inbound", 6000, "A port to use for inbound connections")
 	verbose := flag.Bool("v", false, "Enable verbose output")
 	flag.Var(&executors, "executors", "Comma separated list of executors (first listed is primary)")
