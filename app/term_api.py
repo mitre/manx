@@ -60,7 +60,8 @@ class TermApi(BaseService):
             ldflags = ['-s', '-w', '-X main.key=%s' % (self.generate_name(size=30),)]
             for param in ['contact', 'socket', 'http']:
                 if param in headers:
-                    ldflags.append('-X main.%s=%s' % (param, headers[param]))
+                    sanitized = self.file_svc.sanitize_ldflag_value(param, headers[param])
+                    ldflags.append('-X main.%s=%s' % (param, sanitized))
             output = str(pathlib.Path('plugins/%s/payloads' % plugin).resolve() / ('%s-%s' % (name, platform)))
             build_path, build_file = os.path.split(file_path)
             await self.file_svc.compile_go(platform, output, build_file, ldflags=' '.join(ldflags), build_dir=build_path)
