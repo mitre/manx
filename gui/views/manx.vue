@@ -5,12 +5,15 @@ import { storeToRefs } from "pinia";
 const $api = inject("$api");
 
 onMounted(async () => {});
+
 </script>
 
 <script>
 import { toast } from "bulma-toast";
 import { useCoreStore } from "@/stores/coreStore";
 import { mapState } from "pinia";
+import { loadCommand, setCommand } from '@/../../manx/static/js/terminal.js'
+
 export default {
     inject: ["$api"],
     data() {
@@ -37,9 +40,9 @@ export default {
             },
         }
     },
-    created() {
+    mounted() {
         this.initPage();
-  },
+    },
     computed: {
         ...mapState(useCoreStore, ["mainConfig"]),
     },
@@ -50,47 +53,18 @@ export default {
     },
   methods: {
     async initPage() {
-        let termScript = document.createElement("script");
-        termScript.setAttribute(
-          "src",
-          "/manx/js/terminal.js"
-        );
-        termScript.setAttribute(
-          "type",
-          "module"
-        );
-        if (!import.meta.env.PROD) {
-          termScript.setAttribute(
-            "src",
-            "http://localhost:8888/manx/js/terminal.js"
-          );
-      }
-        document.head.appendChild(termScript);
-        this.$api.get("/plugin/manx/sessions").then((sessions) => {
-          this.sessions = sessions.data.sessions;
-        }).catch((error) => {
-          toast({message: "Error loading sessions", type: "is-danger", dismissible: true, pauseOnHover: true, duration: 2000})
-          console.error(error);
-        });
+        loadCommand(this.$api);
+
+        this.refreshManx();
         setInterval(async () => {
-            if (!document.querySelector('.xterm-cursor-layer') && window.loadManxTerm) {
-                window.loadManxTerm();
-            }
             this.refreshManx();
         }, "3000");
-        // while (this.$refs.header) {
-        //     if (!document.querySelector('.xterm-cursor-layer') && window.loadManxTerm) {
-        //         window.loadManxTerm();
-        //     }
-        //     await sleep(3000);
-        //     this.refreshManx();
-        // }
     },
 
     refreshManx() {
-        this.$api.post('/plugin/manx/sessions').then((sessions) => {
+        this.$api.get('/plugin/manx/sessions').then((sessions) => {
             // Join new manx agents in array, and assign default platform and executors if DNE
-            sessions = sessions.data;
+            sessions = sessions.data.sessions;
             this.sessions = this.sessions.concat(sessions.map((s) => ({ ...s, platform: s.platform || this.DEFAULT_PLATFORM, executors: s.executors || [this.DEFAULT_EXECUTORS] })).filter((s) => !this.sessionIDs.includes(s.id)));
         }).catch((error) => {
             toast({message: "Error refreshing manx", type: "is-danger", dismissible: true, pauseOnHover: true, duration: 2000})
@@ -117,7 +91,7 @@ export default {
                 });
             }
         };
-        this.$api.post("/api/rest", { paw: this.selectedSessionID.info}).then((res) => {
+        this.$api.post("/plugin/manx/ability", { paw: this.selectedSession.info}).then((res) => {
             getUniqueAbilities(this, res.data);
         }).catch((error) => {
             toast({message: "Error getting tactics", type: "is-danger", dismissible: true, pauseOnHover: true, duration: 2000})
@@ -148,10 +122,9 @@ export default {
     getProcedure() {
         const getCommands = (self, data) => {
             if (data && data.length > 0) {
-                data = JSON.parse(data);
                 data.forEach((ability) => {
                     const executor = ability.executors.find((e) => e.platform === self.selectedSession.platform && e.name === self.selectedSession.executors[0]);
-                    self.terminalCommand = executor ? executor.command : '';
+                    setCommand(executor ? executor.command : '');
                 });
             } else {
                 toast({message: "No ability available for this agents platform and executor combination", type: "is-warning", dismissible: true, pauseOnHover: true, duration: 2000})

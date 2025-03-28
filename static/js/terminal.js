@@ -11,30 +11,15 @@ let prompt = "~$ ";
 let term;
 let fitAddon;
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-async function loadCommand() {
+export async function loadCommand(api) {
   if (!initTerm()) return;
   const el = document.getElementById("session-id");
   el.addEventListener("change", () => {
     clearTerminal();
-    getShellHistory(el);
+    getShellHistory(el, api);
   });
-  while (term) {
-    await sleep(1500);
-    const cmd = document.getElementById("xterminal-command")?.textContent;
-    if (cmd) {
-      term.write(cmd);
-      input = cmd;
-      document.getElementById("xterminal-command").innerText = "";
-    }
-  }
-}
 
-sleep(500).then(() => {
-  window.loadManxTerm = loadCommand;
-  loadCommand();
+
   term?.onData((data) => {
     const code = data.charCodeAt(0);
     if (code === 13) {
@@ -62,7 +47,12 @@ sleep(500).then(() => {
       input += data;
     }
   });
-});
+}
+
+export function setCommand(cmd) {
+  term.write(cmd);
+  input = cmd;
+}
 
 function initTerm() {
   if (!document.querySelector("#manxPage")) {
@@ -109,14 +99,11 @@ function writeHistory(value) {
   input = value;
 }
 
-function getShellHistory(elem) {
+function getShellHistory(elem, api) {
   if (elem.options && elem.selectedIndex)
-    restRequest(
-      "POST",
+    api.post("/plugin/manx/history",
       { paw: elem.options[elem.selectedIndex].getAttribute("data-paw") },
-      populateHistory,
-      "/plugin/manx/history"
-    );
+    ).then((data) => populateHistory(data));
 }
 
 function populateHistory(data) {
