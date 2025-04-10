@@ -7,11 +7,12 @@ class Session(BaseObject):
     def unique(self):
         return self.hash('%s' % self.paw)
 
-    def __init__(self, id, paw, connection):
+    def __init__(self, id, paw, reader, writer):
         super().__init__()
         self.id = id
         self.paw = paw
-        self.connection = connection
+        self.reader = reader
+        self.writer = writer
 
     def store(self, ram):
         existing = self.retrieve(ram['sessions'], self.unique)
