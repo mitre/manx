@@ -55,6 +55,7 @@ class TermApi(BaseService):
 
     async def dynamically_compile(self, headers):
         name, platform = headers.get('file'), headers.get('platform')
+        architecture = headers.get('architecture', 'amd64')
         if which('go') is not None:
             plugin, file_path = await self.file_svc.find_file_path(name)
             ldflags = ['-s', '-w', '-X main.key=%s' % (self.generate_name(size=30),)]
@@ -64,5 +65,5 @@ class TermApi(BaseService):
                     ldflags.append('-X main.%s=%s' % (param, sanitized))
             output = str(pathlib.Path('plugins/%s/payloads' % plugin).resolve() / ('%s-%s' % (name, platform)))
             build_path, build_file = os.path.split(file_path)
-            await self.file_svc.compile_go(platform, output, build_file, ldflags=' '.join(ldflags), build_dir=build_path)
+            await self.file_svc.compile_go(platform, output, build_file, arch=architecture, ldflags=' '.join(ldflags), build_dir=build_path)
         return await self.app_svc.retrieve_compiled_file(name, platform)
