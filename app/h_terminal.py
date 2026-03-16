@@ -13,11 +13,12 @@ class Handle:
     @staticmethod
     async def run(socket, path, services):
         session_id = path.split('/')[2]
-        cmd = await socket.recv()
+        msg = await socket.receive()
+        cmd = msg.data if hasattr(msg, 'data') else str(msg)
         handler = services.get('term_svc').socket_conn.tcp_handler
         paw = next(i.paw for i in handler.sessions if i.id == int(session_id))
         services.get('contact_svc').report['websocket'].append(
             dict(paw=paw, date=datetime.now(timezone.utc).strftime(BaseWorld.TIME_FORMAT), cmd=cmd)
         )
         status, pwd, reply, response_time = await handler.send(session_id, cmd)
-        await socket.send(json.dumps(dict(response=reply.strip(), pwd=pwd, status=status, response_time=response_time)))
+        await socket.send_str(json.dumps(dict(response=reply.strip(), pwd=pwd, status=status, response_time=response_time)))
