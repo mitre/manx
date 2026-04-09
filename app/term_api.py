@@ -1,3 +1,4 @@
+import logging
 import os
 import pathlib
 from shutil import which
@@ -7,6 +8,8 @@ from aiohttp_jinja2 import template
 
 from app.utility.base_service import BaseService
 from plugins.manx.app.term_svc import TermService
+
+log = logging.getLogger(__name__)
 
 
 class TermApi(BaseService):
@@ -22,24 +25,33 @@ class TermApi(BaseService):
 
     @template('manx.html')
     async def splash(self, request):
-        await self.term_svc.socket_conn.tcp_handler.refresh()
         try:
-            sessions = [dict(id=s.id, info=a.paw, platform=a.platform, executors=a.executors)
-                        for s in self.term_svc.socket_conn.tcp_handler.sessions
-                        for a in await self.data_svc.locate('agents', match=dict(paw=s.paw))]
-            return dict(sessions=sessions, websocket=self.get_config('app.contact.websocket'))
+            await self.term_svc.socket_conn.tcp_handler.refresh()
         except Exception as e:
-            print(e)
+            log.error('Failed to refresh TCP handler: %s', e)
+            return dict(sessions=[], websocket=self.get_config('app.contact.websocket'))
+        sessions = [dict(id=s.id, info=a.paw, platform=a.platform, executors=a.executors)
+                    for s in self.term_svc.socket_conn.tcp_handler.sessions
+                    for a in await self.data_svc.locate('agents', match=dict(paw=s.paw))]
+        return dict(sessions=sessions, websocket=self.get_config('app.contact.websocket'))
 
     async def get_sessions(self, request):
-        await self.term_svc.socket_conn.tcp_handler.refresh()
+        try:
+            await self.term_svc.socket_conn.tcp_handler.refresh()
+        except Exception as e:
+            log.error('Failed to refresh TCP handler: %s', e)
+            raise web.HTTPInternalServerError(reason='Failed to refresh sessions')
         sessions = [dict(id=s.id, info=a.paw, platform=a.platform, executors=a.executors)
                     for s in self.term_svc.socket_conn.tcp_handler.sessions
                     for a in await self.data_svc.locate('agents', match=dict(paw=s.paw))]
         return web.json_response(dict(sessions=sessions))
 
     async def sessions(self, request):
-        await self.term_svc.socket_conn.tcp_handler.refresh()
+        try:
+            await self.term_svc.socket_conn.tcp_handler.refresh()
+        except Exception as e:
+            log.error('Failed to refresh TCP handler: %s', e)
+            raise web.HTTPInternalServerError(reason='Failed to refresh sessions')
         sessions = [dict(id=s.id, info=s.paw) for s in self.term_svc.socket_conn.tcp_handler.sessions]
         return web.json_response(sessions)
 
